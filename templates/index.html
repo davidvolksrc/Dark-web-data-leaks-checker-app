@@ -5,59 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark Web Credential Checker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
 <body>
     <div class="container">
         <div class="top-bar">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="SRC Logo" class="logo">
         </div>
 
         <h1>🔍 Dark Web Checker</h1>
         <p class="description">
-            Preverite, ali so vaši podatki varno shranjeni ali pa so bili del vdorov na temnem spletu.
+            Preverite, ali so vaši podatki bili del vdorov in so objavljeni na temnem spletu!
         </p>
 
-        <div class="form-wrapper">
+        <form method="POST" onsubmit="showSpinner()" class="search-form">
             <label for="email">E-poštni naslov:</label>
-            <input type="email" id="email" placeholder="vnesite@email.si" required>
+            <input type="email" name="email" id="email" placeholder="info@src.si" required 
+                   value="{{ request.form.get('email', '') }}">
             
-            <div class="form-actions">
-                <button type="button" onclick="handleCheck()" class="primary-btn">Preveri zdaj!</button>
-                <button type="button" onclick="clearSession()" class="clear-session-form">🗑️ Počisti</button>
+            <div class="button-row">
+                <button type="submit" class="submit-btn">Preveri zdaj!</button>
+                <button type="button" onclick="clearSession()" class="clear-btn">Počisti!</button>
             </div>
-        </div>
+        </form>
 
-        <div id="skeleton">
-            <div class="skeleton-card shimmer"></div>
-            <div class="skeleton-line shimmer"></div>
-            <div class="skeleton-line shimmer"></div>
-        </div>
-        
-<template id="resultTemplate">
-    <div class="breach-box">
-        <span class="source-name"></span>
-        <button class="copy-btn"></button>
-    </div>
-</template>
-        
-        <div id="eduSection">
-            <div class="edu-card">
-                <h3>🛡️ Kaj storiti zdaj?</h3>
-                <ul class="edu-list">
-                    <li><strong>1. Takoj spremenite geslo:</strong> Če uporabljate isto geslo za več storitev, ga povsod zamenjajte.</li>
-                    <li><strong>2. Omogočite 2FA:</strong> Vklopite dvofaktorsko avtentikacijo (SMS ali aplikacija) za dodatno varnost.</li>
-                    <li><strong>3. Uporabite Password Manager:</strong> Za varno shranjevanje gesel uporabljajte Bitwarden ali LastPass.</li>
-                </ul>
-                <button onclick="exportPDF()" class="export-btn">📄 Prenesi PDF poročilo</button>
-            </div>
-        </div>
-    </div>
+        <div id="spinner" class="spinner hidden"></div>
 
+        <div id="resultsContainer">
+            {% if error %}
+                <p class="error">❌ {{ error }}</p>
+            {% endif %}
+
+            {% if results is not none %}
+                {% if results %}
+                    <div class="score-card">
+                        <div class="score-header-red"></div>
+                        <div class="score-body">
+                            <h3>Stopnja ogroženosti: <span class="text-danger">VISOKA</span></h3>
+                            <p>Vaši podatki so bili najdeni v <strong>{{ results|length }}</strong> različnih virih.</p>
+                        </div>
+                    </div>
+
+                    <div class="results-found">
+                        <h2>⚠️ Najdeni viri uhajanj:</h2>
+                        <ul class="breach-list">
+                            {% for source in results %}
+                                <li class="breach-item">{{ source }}</li>
+                            {% endfor %}
+                        </ul>
+                        
+                        <div class="action-card">
+                            <h3>🛡️ Kaj storiti zdaj?</h3>
+                            <ol>
+                                <li><strong>Takoj spremenite geslo:</strong> Če uporabljate isto geslo za več storitev, ga povsod zamenjajte.</li>
+                                <li><strong>Omogočite 2FA:</strong> Vklopite dvofaktorsko avtentiakcijo (SMS ali aplikacija) za dodatno varnost.</li>
+                                <li><strong>Uporabite Password Manager:</strong> Za varno shranjevanje gesel uporabljajte Bitwarden ali LastPass.</li>
+                            </ol>
+                            <button onclick="exportPDF()" class="pdf-btn">📄 Prenesi PDF poročilo</button>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="success-msg">✅ Vaš e-naslov ni bil najden v bazah vdorov.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    
     <footer>
-        <p>© 2025 Dark Web Credential Checker | Razvoj: <a href="https://src.si" target="_blank">SRC.si</a></p>
+        <p>© 2025 Dark Web Credential Checker | Izdelal: <a href="https://SRC.si" target="_blank">SRC d.o.o.</a></p>
     </footer>
 </body>
 </html>
