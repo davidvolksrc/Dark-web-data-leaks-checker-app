@@ -1,173 +1,71 @@
 /* === GENERAL === */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f9f9f9; color: #333;
 }
 
-body.light-mode {
-    background-color: #f9f9f9;
-    color: #121212;
-}
-
-body.dark-mode {
-    background-color: #121212;
-    color: #f1f1f1;
-}
-
-/* === CONTAINER === */
 .container {
-    max-width: 700px;
-    margin: 50px auto;
-    padding: 2rem;
-    background-color: inherit;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    max-width: 900px; margin: 40px auto; padding: 2.5rem;
+    background-color: #fff; border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-/* === LOGO === */
-.logo {
-    display: block;
-    margin: 0 auto 30px;
-    width: 250px;
-    height: auto;
-}
-
-/* === TEXT === */
-h1 {
-    text-align: center;
-    margin-bottom: 1rem;
-    font-size: 29px;
-}
-
-p { 
-    font-size: 16px;
-}
-
-.description {
-    text-align: center;
-    font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-    color: #777;
-}
-
-label[for="email"] {
-    font-size: 22px;
-    font-weight: bold;
-}
+.top-bar { display: flex; justify-content: center; margin-bottom: 20px; }
+.logo { width: 220px; height: auto; }
+h1 { text-align: center; font-size: 28px; }
+.description { text-align: center; color: #666; margin-bottom: 2rem; }
 
 /* === FORM === */
-form.form-inline {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    margin-bottom: 2rem;
-}
-
+.form-wrapper { display: flex; flex-direction: column; align-items: center; }
+label { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
 input[type="email"] {
-    padding: 0.5rem;
-    width: 97%;
- 
-    border-radius: 7px;
-    border: 2px solid #ccc;
-    background-color: #e0e0e0;
-    color: #000;
-    font-size: 19px;
+    width: 100%; padding: 12px;
+    border-radius: 8px; border: 1px solid #ccc;
+    background-color: #eee; font-size: 18px; margin-bottom: 20px;
 }
 
-body.dark-mode input[type="email"] {
-    background-color: #222;
-    color: #fff;
-    border: 1px solid #555;
+.form-actions { display: flex; gap: 12px; justify-content: center; }
+.primary-btn, .export-btn {
+    padding: 12px 25px; background-color: #0b96e1;
+    color: white; border: none; border-radius: 6px;
+    cursor: pointer; font-weight: bold;
+}
+.clear-session-form {
+    padding: 12px 25px; background-color: #0b96e1;
+    color: white; border: none; border-radius: 6px; cursor: pointer;
 }
 
-/* === BUTTONS === */
-button,
-.theme-toggle,
-.clear-session,
-.export-btn {
-    padding: 0.5rem 1.2rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    color: #fff;
-    background-color: #0b96e1;
-    font-size: 18px;
+/* === SKELETON SHIMMER === */
+.hidden { display: none; }
+.skeleton-card { height: 100px; background: #eee; margin-bottom: 20px; border-radius: 8px; }
+.skeleton-line { height: 40px; background: #eee; margin-bottom: 10px; border-radius: 4px; }
+.shimmer {
+    background: linear-gradient(90deg, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
 }
+@keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
 
-button:hover,
-.theme-toggle:hover,
-.clear-session:hover,
-.export-btn:hover {
-    background-color: #1774d7;
+/* === RESULTS & SEVERITY === */
+.stats-card {
+    background: #fff; padding: 15px; border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; margin-bottom: 20px;
 }
-
-/* === LIST RESULTS === */
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
 .breach-box {
-    background-color: #e0e0e0;
-    color: #000;
-    padding: 8px 12px;
-    margin-bottom: 8px;
-    border-radius: 5px;
-    font-family: monospace;
+    background: #f4f4f4; padding: 12px; margin-bottom: 8px;
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+}
+.copy-btn {
+    background: #eee; border: 1px solid #ccc; padding: 4px 8px;
+    font-size: 12px; border-radius: 4px; cursor: pointer;
 }
 
-body.dark-mode .breach-box {
-    background-color: #2b2b2b;
-    color: #f1f1f1;
-}
+/* === EDUCATION SECTION === */
+.edu-card { background: #e8f0fe; padding: 20px; border-radius: 8px; margin-top: 30px; }
+.edu-list { list-style: none; padding: 0; }
+.edu-list li { margin-bottom: 10px; font-size: 15px; }
 
-/* === LAYOUT === */
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.top-actions {
-    display: flex;
-    gap: 10px;
-}
-
-/* === SPINNER === */
-.spinner {
-    border: 6px solid #eee;
-    border-top: 6px solid #28a745;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    margin: 20px auto;
-    animation: spin 1s linear infinite;
-}
-
-.hidden {
-    display: none;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0); }
-    100% { transform: rotate(360deg); }
-}
-
-/* === FOOTER === */
-footer {
-    text-align: center;
-    margin-top: 50px;
-    padding: 20px;
-    font-size: 12px;
-    color: gray;
-}
-
-/* === ERROR === */
-.error {
-    color: #ff4d4d;
-    text-align: center;
-}
+footer { text-align: center; margin-top: 40px; color: #888; font-size: 13px; }
+.error { color: #d93025; font-weight: bold; text-align: center; }
+.success-box { color: #28a745; text-align: center; font-weight: bold; }
