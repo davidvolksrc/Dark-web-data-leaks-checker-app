@@ -15,9 +15,7 @@ def index():
     if request.method == 'POST':
         email = request.form.get('email')
         if email:
-            headers = {
-                "Authorization": f"Bearer {API_KEY}"
-            }
+            headers = {"Authorization": f"Bearer {API_KEY}"}
             url = f"https://leakcheck.io/api/public?check={email}&type=email"
             try:
                 res = requests.get(url, headers=headers)
@@ -28,12 +26,15 @@ def index():
                     else:
                         results = []
                 else:
-                    # Izpis napake, kot je vidna na sliki
                     error = "Zahteva je potekla. Poskusite znova."
             except Exception as e:
                 error = f"Sistemska napaka: {str(e)}"
 
     return render_template('index.html', results=results, error=error)
+
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
