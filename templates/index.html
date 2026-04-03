@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Web Credential Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body onload="initApp()">
+    <div class="container">
+        <div class="top-bar">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+            <div class="top-actions">
+                <button onclick="toggleTheme()" class="theme-toggle" title="Preklopi temo">🌙 / ☀️</button>
+                <button onclick="clearSession()" class="clear-session">🗑️ Počisti</button>
+            </div>
+        </div>
+
+        <h1>🔍 Dark Web Checker</h1>
+        <p class="description">
+            Preverite, ali so vaši podatki bili del vdorov in so objavljeni na temnem spletu!
+        </p>
+
+        <form method="POST" onsubmit="showSpinner()" class="form-inline" id="checkForm">
+            <label for="email" class="sr-only">E-poštni naslov:</label>
+            <input type="email" name="email" id="email" value="{{ email_val }}" placeholder="vnesite@email.si" required>
+            <button type="submit">Preveri zdaj!</button>
+        </form>
+
+        <div id="spinner" class="spinner hidden"></div>
+
+        <div id="resultsContainer">
+            {% if error %}
+                <div class="error-box">
+                    <p class="error">❌ {{ error }}</p>
+                </div>
+            {% endif %}
+
+            {% if results is not none %}
+                {% if results %}
+                    <h2 class="warning-text">⚠️ Najdeni viri uhajanj:</h2>
+                    <ul id="leakList">
+                        {% for source in results %}
+                            <li class="breach-box">{{ source }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button onclick="exportPDF()" class="export-btn">📄 Prenesi PDF poročilo</button>
+                {% else %}
+                    <div class="success-box">
+                        <p>✅ Odlično! Ta e-naslov ni bil najden v bazi znanih uhajanj.</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Dark Web Credential Checker | Razvoj: <a href="https://src.si" target="_blank">SRC d.o.o.</a></p>
+    </footer>
+</body>
+</html>
