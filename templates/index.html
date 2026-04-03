@@ -3,77 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Web Credential Checker</title>
+    <title>Dark Web Checker | SRC d.o.o.</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container animate__animated animate__fadeIn">
         <div class="top-bar">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="SRC Logo" class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+            <a href="/faq" class="faq-link">❓Pomoč in FAQ </a>
         </div>
 
         <h1>🔍 Dark Web Checker</h1>
-        <p class="description">
-            Preverite, ali so vaši podatki bili del vdorov in so objavljeni na temnem spletu!
-        </p>
+        <p class="description">Preverite, ali so vaši podatki bili del vdorov in so objavljeni na temnem spletu!</p>
 
         <form method="POST" onsubmit="showSpinner()" class="search-form">
-            <label for="email">E-poštni naslov:</label>
-            <input type="email" name="email" id="email" placeholder="info@src.si" required 
-                   value="{{ request.form.get('email', '') }}">
+         <h1>  <label for="email">Vpišite vaš e-poštni naslov:</label></h1> 
+            <input type="email" name="email" id="email" placeholder="vnesite@email.si" required value="{{ request.form.get('email', '') }}">
             
             <div class="button-row">
-                <button type="submit" class="submit-btn">Preveri zdaj!</button>
-                <button type="button" onclick="clearSession()" class="clear-btn">Počisti!</button>
+                <button type="submit" class="submit-btn">🔍 Preveri zdaj!</button>
+                <button type="button" onclick="clearSession()" class="clear-btn">🗑️ Počisti!</button>
             </div>
+            <p class="button-hint">Vaš e-naslov bo varno preverjen v bazi vdorov. <B>Podatkov ne shranjujemo.</B></p>
         </form>
 
         <div id="spinner" class="spinner hidden"></div>
 
         <div id="resultsContainer">
             {% if error %}
-                <p class="error">❌ {{ error }}</p>
+                <p class="error animate__animated animate__headShake">❌ {{ error }}</p>
             {% endif %}
 
             {% if results is not none %}
                 {% if results %}
-                    <div class="score-card">
-                        <div class="score-header-red"></div>
-                        <div class="score-body">
-                            <h3>Stopnja ogroženosti: <span class="text-danger">VISOKA</span></h3>
-                            <p>Vaši podatki so bili najdeni v <strong>{{ results|length }}</strong> različnih virih.</p>
+                    <div class="animate__animated animate__slideInUp">
+                        <div class="score-card">
+                            <div class="score-header-red"></div>
+                            <div class="score-body">
+                                <h3>Stopnja ogroženosti: <span class="text-danger">VISOKA</span></h3>
+                                <p>Vaši podatki so bili najdeni v <strong>{{ results|length }}</strong> različnih virih.</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="results-found">
-                        <h2>⚠️ Najdeni viri uhajanj:</h2>
-                        <ul class="breach-list">
-                            {% for source in results %}
-                                <li class="breach-item">{{ source }}</li>
-                            {% endfor %}
-                        </ul>
+                        <div class="table-container">
+                            <table class="results-table">
+                               <thead>
+                                   <tr>
+                                       <th>#</th>
+                                       <th>Vir uhajanja podatkov (Breach Source)</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   {% for source in results %}
+                                   <tr>
+                                       <td>{{ loop.index }}</td>
+                                       <td class="breach-name">{{ source }}</td>
+                                   </tr>
+                                   {% endfor %}
+                               </tbody>
+                            </table>
+                        </div>
                         
                         <div class="action-card">
                             <h3>🛡️ Kaj storiti zdaj?</h3>
                             <ol>
-                                <li><strong>Takoj spremenite geslo:</strong> Če uporabljate isto geslo za več storitev, ga povsod zamenjajte.</li>
-                                <li><strong>Omogočite 2FA:</strong> Vklopite dvofaktorsko avtentiakcijo (SMS ali aplikacija) za dodatno varnost.</li>
-                                <li><strong>Uporabite Password Manager:</strong> Za varno shranjevanje gesel uporabljajte Bitwarden ali LastPass.</li>
+                                <li><strong>Takoj spremenite geslo:</strong> Povsod, kjer uporabljate isto geslo.</li>
+                                <li><strong>Omogočite 2FA:</strong> Vklopite dvofaktorsko avtentikacijo.</li>
+                                <li><strong>Uporabite Password Manager:</strong> Za varno shranjevanje gesel.</li>
                             </ol>
-                            <button onclick="exportPDF()" class="pdf-btn">📄 Prenesi PDF poročilo</button>
+                            <button onclick="exportPDF()" class="pdf-btn">📄 Prenesi PDF s Checklisto</button>
                         </div>
                     </div>
                 {% else %}
-                    <p class="success-msg">✅ Vaš e-naslov ni bil najden v bazah vdorov.</p>
+                    <p class="success-msg animate__animated animate__fadeIn">✅ Vaš e-naslov ni bil najden v bazah vdorov.</p>
                 {% endif %}
             {% endif %}
         </div>
     </div>
     
     <footer>
-        <p>© 2025 Dark Web Credential Checker | Izdelal: <a href="https://SRC.si" target="_blank">SRC d.o.o.</a></p>
+        <h4><p>© 2026 Dark Web Credential Checker App | Developed by <a href="https://SRC.si" target="_blank">SRC d.o.o.</a></p></h4>
     </footer>
 </body>
 </html>
