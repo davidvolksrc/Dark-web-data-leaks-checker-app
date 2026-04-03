@@ -1,41 +1,39 @@
-import os
+from flask import Flask, render_template, request
 import requests
-from flask import Flask, render_template, request, jsonify
+import os
 
 app = Flask(__name__)
-session = requests.Session()
 
-# Get API Key from environment variable
+# Pridobivanje API ključa iz okoljskih spremenljivk
 API_KEY = os.getenv("API_KEY")
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    results = None
+    error = None
 
-@app.route('/api/check', methods=['POST'])
-def check_email():
-    data = request.get_json()
-    email = data.get('email', '').strip()
-    
-    if not email:
-        return jsonify({"success": False, "error": "E-poštni naslov je obvezen"}), 400
+    if request.method == 'POST':
+        email = request.form.get('email')
+        if email:
+            headers = {
+                "Authorization": f"Bearer {API_KEY}"
+            }
+            url = f"https://leakcheck.io/api/public?check={email}&type=email"
+            try:
+                res = requests.get(url, headers=headers)
+                if res.status_code == 200:
+                    data = res.json()
+                    if data.get('success') and data.get('found'):
+                        results = data.get('sources', [])
+                    else:
+                        results = []
+                else:
+                    # Izpis napake, kot je vidna na sliki
+                    error = "Zahteva je potekla. Poskusite znova."
+            except Exception as e:
+                error = f"Sistemska napaka: {str(e)}"
 
-    headers = {"Authorization": f"Bearer {API_KEY}"}
-    url = f"https://leakcheck.io/api/public?check={email}&type=email"
-    
-    try:
-        # 10-second timeout for stability
-        res = session.get(url, headers=headers, timeout=60)
-        
-        if res.status_code == 200:
-            return jsonify(res.json())
-        elif res.status_code == 429:
-            return jsonify({"success": False, "error": "Preveč zahtev. Poskusite kasneje."}), 429
-        else:
-            return jsonify({"success": False, "error": "Napaka pri povezavi z bazo."}), res.status_code
-            
-    except Exception as e:
-        return jsonify({"success": False, "error": "Strežnik ni dosegljiv."}), 500
+    return render_template('index.html', results=results, error=error)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
