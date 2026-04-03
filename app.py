@@ -25,7 +25,7 @@ def check_email():
     
     try:
         # 10-second timeout for stability
-        res = session.get(url, headers=headers, timeout=10)
+        res = session.get(url, headers=headers, timeout=60)
         
         if res.status_code == 200:
             return jsonify(res.json())
