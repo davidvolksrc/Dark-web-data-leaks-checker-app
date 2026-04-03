@@ -4,6 +4,8 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 session = requests.Session()
+
+# Get API Key from environment variable
 API_KEY = os.getenv("API_KEY")
 
 @app.route('/')
@@ -16,20 +18,25 @@ def check_email():
     email = data.get('email', '').strip()
     
     if not email:
-        return jsonify({"success": False, "error": "E-naslov je obvezen"}), 400
+        return jsonify({"success": False, "error": "E-poštni naslov je obvezen"}), 400
 
     headers = {"Authorization": f"Bearer {API_KEY}"}
     url = f"https://leakcheck.io/api/public?check={email}&type=email"
     
     try:
+        # 10-second timeout for stability
         res = session.get(url, headers=headers, timeout=10)
+        
         if res.status_code == 200:
-            api_data = res.json()
-            # We return the raw data; JS will handle severity and stats
-            return jsonify(api_data)
-        return jsonify({"success": False, "error": "API napaka"}), res.status_code
+            return jsonify(res.json())
+        elif res.status_code == 429:
+            return jsonify({"success": False, "error": "Preveč zahtev. Poskusite kasneje."}), 429
+        else:
+            return jsonify({"success": False, "error": "Napaka pri povezavi z bazo."}), res.status_code
+            
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({"success": False, "error": "Strežnik ni dosegljiv."}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=int(os.environ.get("PORT", 5000)))
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
