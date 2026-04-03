@@ -43,23 +43,26 @@ function renderResults(sources) {
     const severity = sources.length > 5 ? 'VISOKA' : 'ZMERNA';
     const color = sources.length > 5 ? '#d93025' : '#f4b400';
 
-    let html = `
-        <div class="stats-card" style="border-top: 5px solid ${color}">
-            <h4>Stopnja ogroženosti: <span style="color:${color}">${severity}</span></h4>
-            <p>Vaši podatki so bili najdeni v <strong>${sources.length}</strong> različnih virih.</p>
-        </div>
-        <ul id="leakList">`;
+   function renderResults(results) {
+    const container = document.getElementById("resultsContainer");
+    const template = document.getElementById("resultTemplate");
 
-    sources.forEach(source => {
-        html += `
-            <li class="breach-box">
-                <span class="source-name">${source}</span>
-                <button class="copy-btn" onclick="copyText('${source}', this)">Kopiraj</button>
-            </li>`;
+    container.innerHTML = ""; // clear previous results
+
+    results.forEach(item => {
+        const clone = template.content.cloneNode(true);
+
+        // Insert readable text instead of [object Object]
+        clone.querySelector(".source-name").textContent = 
+            `${item.source} — ${item.email || ''} ${item.password || ''}`;
+
+        // Fix copy button so it copies actual text, not an object
+        clone.querySelector(".copy-btn").textContent = "📋 Kopiraj";
+        clone.querySelector(".copy-btn").onclick = () =>
+            copyText(JSON.stringify(item, null, 2));
+
+        container.appendChild(clone);
     });
-
-    html += '</ul>';
-    container.innerHTML = html;
 }
 
 function copyText(text, btn) {
